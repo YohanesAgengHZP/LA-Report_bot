@@ -1,0 +1,44 @@
+version: "3.9"
+
+x-default-logging: &logging
+  driver: "json-file"
+  options:
+    max-size: "5m"
+    max-file: "2"
+
+networks:
+  linkaja-network:
+    name: linkaja-network
+    # external: true
+    driver: bridge
+
+services:
+  report_bot:
+    # image: ghcr.io/shiblysolution/linkaja-report-bot:latest
+    image: ghcr.io/shiblysolution/linkaja-report-bot:releasev2.0
+    container_name: link_aja_bot-report
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 150M
+        # reservations:
+        #   cpus: "0.25"
+        #   memory: 100M
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - CHAT_ID=${CHAT_ID}
+      - API_Unclosed=${API_Unclosed}
+      - API_Closed=${API_Closed}
+      - API_OpenInSLA=${API_OpenInSLA}
+      - API_OpenOutSLA=${API_OpenOutSLA}
+      - API_ClosedInSLA=${API_ClosedInSLA}
+      - API_ClosedOutSLA=${API_ClosedOutSLA}
+      - API_KIPOutSLA=${API_KIPOutSLA}
+      - API_AgingOpenOut=${API_AgingOpenOut}
+    # volumes:
+    #   - ./index.js:/usr/src/app/index.js
+    networks:
+      - linkaja-network
+    logging: *logging
